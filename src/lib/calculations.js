@@ -120,9 +120,9 @@ export function buildMonthlySummaries(entries, settings) {
       daily.push({
         date: entry.date,
         day: entry.date.slice(8, 10),
-        adSpend: round(m.adSpend),
-        sales: round(m.sales),
-        profit: round(m.profit),
+        adSpend: round(m.adSpend, 2),
+        sales: round(m.sales, 2),
+        profit: round(m.profit, 2),
         roas: round(m.roasReal, 2),
       })
     }
@@ -166,17 +166,21 @@ export function round(n, decimals = 0) {
   return Math.round((toNumber(n, 0) + Number.EPSILON) * f) / f
 }
 
-// Formato de moneda para mostrar.
+// Formato de moneda para mostrar (con 2 decimales).
 export function formatMoney(value, currency = 'ARS') {
   const n = toNumber(value, 0)
   try {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency,
-      maximumFractionDigits: 0,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(n)
   } catch {
-    return `$${Math.round(n).toLocaleString('es-AR')}`
+    return `$${n.toLocaleString('es-AR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`
   }
 }
 
